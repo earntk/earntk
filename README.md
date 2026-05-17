@@ -27,3 +27,4 @@ Play free online games instantly without download.
 
 Visit Website:
 https://earntk.github.io/earntk/
+![EarnTK Games](screenshot.png)
