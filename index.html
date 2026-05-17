@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play & Earn - গেম খেলুন, টাকা আয় করুন</title>
+    <style>
+        :root {
+            --primary: #ff007f;
+            --secondary: #8e2de2;
+            --bg-gradient: linear-gradient(135deg, #4a00e0, #8e2de2);
+            --surface: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        header {
+            width: 100%;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        .balance-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        p.subtitle {
+            color: #e0e0e0;
+            margin-bottom: 30px;
+        }
+
+        /* Game Styles */
+        #game-container {
+            width: 100%;
+            max-width: 500px;
+            height: 400px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 3px solid var(--primary);
+            border-radius: 15px;
+            position: relative;
+            margin: 0 auto 30px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: none;
+        }
+
+        #basket {
+            width: 80px;
+            height: 20px;
+            background: #00ffcc;
+            position: absolute;
+            bottom: 10px;
+            left: 210px;
+            border-radius: 5px;
+            box-shadow: 0 0 15px #00ffcc;
+            transition: left 0.1s ease-out;
+        }
+
+        .coin {
+            width: 25px;
+            height: 25px;
+            background: #ffd700;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            box-shadow: 0 0 10px #ffd700;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, var(--primary), #ff416c);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 0, 127, 0.4);
+            transition: 0.3s;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 0, 127, 0.6);
+        }
+
+        .btn-withdraw {
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+            box-shadow: 0 5px 15px rgba(56, 239, 125, 0.4);
+        }
+        .btn-withdraw:hover {
+            box-shadow: 0 8px 25px rgba(56, 239, 125, 0.6);
+        }
+
+        /* Modal / Popup Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #1f1c2c;
+            border: 2px solid var(--primary);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .bkash-steps {
+            background: #e2136e;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 16px;
+        }
+
+        input::placeholder {
+            color: #ccc;
+        }
+
+        .alert-error {
+            color: #ff4a4a;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">🚀 Earn💸Zone</div>
+        <div class="balance-card">ব্যালেন্স: ৳ <span id="balance">0.00</span></div>
+    </header>
+
+    <div class="container">
+        <h1>কয়েন ধরুন, টাকা ইনকাম করুন!</h1>
+        <p class="subtitle">প্রতিটি কয়েন ক্যাচ করলে পাবেন ৫০ পয়সা। ১০০০ টাকা হলেই সরাসরি বিকাশ উইথড্র!</p>
+
+        <div id="start-screen">
+            <button class="btn" onclick="startGame()">গেম শুরু করুন</button>
+            <button class="btn btn-withdraw" onclick="openWithdrawModal()">টাকা তুলুন (Withdraw)</button>
+        </div>
+
+        <!-- Game Canvas Area -->
+        <div id="game-container">
+            <div id="basket"></div>
+        </div>
+        
+        <div id="game-stats" style="display: none;">
+            <h3>স্কোর: <span id="score">0</span></h3>
+            <button class="btn" style="padding: 8px 20px; font-size: 14px;" onclick="stopGame()">গেম বন্ধ করুন</button>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div id="withdraw-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2>টাকা উত্তোলন (Withdraw)</h2>
+            <p style="margin-top: 10px; color: #ff007f;">* উইথড্র করার জন্য ১০০০ টাকা ব্যালেন্স এবং ৫০ টাকার একটি সাবস্ক্রিপশন ফি আবশ্যক।</p>
+            
+            <div id="withdraw-logic-area">
+                <!-- Content changes dynamically via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State variables
+        let balance = 0.00;
+        let score = 0;
+        let gameInterval;
+        let coinInterval;
+        let isPlaying = false;
+        const basket = document.getElementById('basket');
+        const gameContainer = document.getElementById('game-container');
+        let basketLeft = 210;
+
+        // Load Balance from localStorage if exists
+        if(localStorage.getItem('user_balance')) {
+            balance = parseFloat(localStorage.getItem('user_balance'));
+            document.getElementById('balance').innerText = balance.toFixed(2);
+        }
+
+        // Controls
+        document.addEventListener('keydown', (e) => {
+            if (!isPlaying) return;
+            if (e.key === 'ArrowLeft' && basketLeft > 0) {
+                basketLeft -= 25;
+            } else if (e.key === 'ArrowRight' && basketLeft < 420) {
+                basketLeft += 25;
+            }
+            basket.style.left = basketLeft + 'px';
+        });
+
+        // Touch support for Mobile
+        gameContainer.addEventListener('touchmove', (e) => {
+            if (!isPlaying) return;
+            let rect = gameContainer.getBoundingClientRect();
+            let touchX = e.touches[0].clientX - rect.left;
+            if(touchX > 40 && touchX < 460) {
+                basketLeft = touchX - 40;
+                basket.style.left = basketLeft + 'px';
+            }
+        });
+
+        function startGame() {
+            document.getElementById('start-screen').style.display = 'none';
+            gameContainer.style.display = 'block';
+            document.getElementById('game-stats').style.display = 'block';
+            isPlaying = true;
+            score = 0;
+            document.getElementById('score').innerText = score;
+            
+            // Spawn Coins
+            coinInterval = setInterval(createCoin, 1200);
+        }
+
+        function stopGame() {
+            clearInterval(coinInterval);
+            isPlaying = false;
+            gameContainer.style.display = 'none';
+            document.getElementById('game-stats').style.display = 'none';
+            document.getElementById('start-screen').style.display = 'block';
+            
+            // Remove remaining coins
+            const coins = document.querySelectorAll('.coin');
+            coins.forEach(coin => coin.remove());
+        }
+
+        function createCoin() {
+            if (!isPlaying) return;
+            const coin = document.createElement('div');
+            coin.classList.add('coin');
+            coin.style.left = Math.floor(Math.random() * 475) + 'px';
+            coin.style.top = '0px';
+            gameContainer.appendChild(coin);
+
+            let coinTop = 0;
+            let moveCoin = setInterval(() => {
+                if (!isPlaying) {
+                    clearInterval(moveCoin);
+                    coin.remove();
+                    return;
+                }
+                
+                coinTop += 5;
+                coin.style.top = coinTop + 'px';
+
+                // Check collision with basket
+                if (coinTop >= 370 && coinTop <= 390) {
+                    let coinLeft = parseInt(coin.style.left);
+                    if (coinLeft >= basketLeft - 20 && coinLeft <= basketLeft + 80) {
+                        score++;
+                        balance += 0.50; // 50 Paisa per coin
+                        document.getElementById('score').innerText = score;
+                        document.getElementById('balance').innerText = balance.toFixed(2);
+                        localStorage.setItem('user_balance', balance);
+                        clearInterval(moveCoin);
+                        coin.remove();
+                    }
+                }
+
+                // Remove missed coins
+                if (coinTop > 400) {
+                    clearInterval(moveCoin);
+                    coin.remove();
+                }
+            }, 20);
+        }
+
+        // Withdraw Modals Logic
+        function openWithdrawModal() {
+            document.getElementById('withdraw-modal').style.display = 'flex';
+            const area = document.getElementById('withdraw-logic-area');
+            
+            if (balance < 1000) {
+                area.innerHTML = `
+                    <div class="alert-error" style="font-size: 18px; margin: 30px 0;">
+                        আপনার ব্যালেন্স পর্যাপ্ত নয়! উইথড্র করতে নূন্যতম ৳ ১০০০ প্রয়োজন। <br>
+                        <span style="color:#fff; font-size:14px;">বর্তমান ব্যালেন্স: ৳ ${balance.toFixed(2)}</span>
+                    </div>
+                    <button class="btn" onclick="closeModal()">আরো গেম খেলুন</button>
+                `;
+            } else {
+                showSubscriptionStep();
+            }
+        }
+
+        function showSubscriptionStep() {
+            const area = document.getElementById('withdraw-logic-area');
+            area.innerHTML = `
+                <p style="margin-top:15px; text-align:left;">উইথড্র লক আনলক করতে নিচের নিয়মে ৫০ টাকা সাবস্ক্রিপশন ফি প্রদান করুন:</p>
+                <div class="bkash-steps">
+                    <strong>বিকাশ পেমেন্ট নিয়ম (Personal):</strong><br>
+                    ১. আপনার বিকাশ অ্যাপ বা *247# এ যান।<br>
+                    ২. <strong>Send Money</strong> অপশন সিলেক্ট করুন।<br>
+                    ৩. নাম্বার দিন: <strong>01879901495</strong><br>
+                    ৪. পরিমাণ: <strong>50tk</strong><br>
+                    ৫. আপনার বিকাশ পিন দিয়ে <strong>Send</strong> করুন।
+                </div>
+                <p style="text-align:left; font-size: 14px; margin-bottom:5px;">টাকা পাঠানোর পর নিচের বক্সে বিকাশ ট্রানজেকশন আইডি (TrxID) দিন:</p>
+                <input type="text" id="trxid-input" placeholder="Example: BKA87X92K1">
+                <button class="btn btn-withdraw" style="width:100%; margin:10px 0;" onclick="verifySubscription()">সাবস্ক্রিপশন নিশ্চিত করুন</button>
+            `;
+        }
+
+        function verifySubscription() {
+            const trxid = document.getElementById('trxid-input').value.trim();
+            if(trxid.length < 6) {
+                alert('দয়া করে সঠিক বিকাশ TrxID প্রদান করুন!');
+                return;
+            }
+            
+            // Proceed to final withdrawal form
+            const area = document.getElementById('withdraw-logic-area');
+            area.innerHTML = `
+                <div style="color: #38ef7d; font-weight:bold; margin-bottom:15px;">✓ সাবস্ক্রিপশন সফলভাবে যাচাই করা হয়েছে!</div>
+                <h3>আপনার বিকাশ একাউন্ট নাম্বার দিন</h3>
+                <input type="number" id="bkash-number" placeholder="01XXXXXXXXX">
+                <h3>উইথড্র পরিমাণ (৳)</h3>
+                <input type="number" id="withdraw-amount" value="${balance.toFixed(0)}" readonly>
+                <button class="btn" style="width:100%; background: linear-gradient(45deg, #11998e, #38ef7d);" onclick="submitWithdraw()">টাকা উত্তোলন নিশ্চিত করুন</button>
+            `;
+        }
+
+        function submitWithdraw() {
+            const num = document.getElementById('bkash-number').value.trim();
+            if(num.length < 11) {
+                alert('সঠিক বিকাশ নাম্বার দিন!');
+                return;
+            }
+            
+            alert('আপনার উইথড্র রিকোয়েস্টটি সফলভাবে গ্রহণ করা হয়েছে। আগামী ২৪ ঘণ্টার মধ্যে আপনার বিকাশ নাম্বারে টাকা পাঠিয়ে দেওয়া হবে। ধন্যবাদ!');
+            balance = 0;
+            localStorage.setItem('user_balance', balance);
+            document.getElementById('balance').innerText = balance.toFixed(2);
+            closeModal();
+        }
+
+        function closeModal() {
+            document.getElementById('withdraw-modal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
